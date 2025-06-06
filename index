@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Interaktive Wartungsliste</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      color: #007ACC;
+    }
+    input[type="text"] {
+      margin-bottom: 20px;
+      padding: 8px;
+      width: 300px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 900px;
+      background: white;
+      cursor: default;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th {
+      background: #007ACC;
+      color: white;
+      user-select: none;
+      cursor: pointer;
+    }
+    th.sort-asc::after {
+      content: " ▲";
+    }
+    th.sort-desc::after {
+      content: " ▼";
+    }
+    select.status-select {
+      width: 100%;
+      padding: 4px;
+      font-size: 14px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-weight: bold;
+      color: inherit;
+    }
+    .status-erledigt {
+      background-color: #d4edda;
+      color: #155724;
+      font-weight: bold;
+    }
+    .status-faellig {
+      background-color: #f8d7da;
+      color: #721c24;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Interaktive Wartungsliste</h1>
+
+  <input type="text" id="searchInput" placeholder="Suche in der Tabelle..." onkeyup="filterTable()" />
+
+  <table id="wartungstabelle">
+    <thead>
+      <tr>
+        <th onclick="sortTable(0)">Datum</th>
+        <th onclick="sortTable(1)">Gerät</th>
+        <th onclick="sortTable(2)">Beschreibung</th>
+        <th onclick="sortTable(3)">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2025-06-01</td>
+        <td>Heizung</td>
+        <td>Filterwechsel</td>
