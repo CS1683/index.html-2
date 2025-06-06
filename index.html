@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Interaktive Wartungsliste</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      color: #007ACC;
+    }
+    input[type="text"] {
+      margin-bottom: 20px;
+      padding: 8px;
+      width: 300px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 900px;
+      background: white;
+      cursor: default;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th {
+      background: #007ACC;
+      color: white;
+      user-select: none;
+      cursor: pointer;
+    }
+    th.sort-asc::after {
+      content: " ▲";
+    }
+    th.sort-desc::after {
+      content: " ▼";
+    }
+  </style>
+</head>
+<body>
+  <h1>Interaktive Wartungsliste</h1>
+
+  <input type="text" id="searchInput" placeholder="Suche in der Tabelle..." onkeyup="filterTable()" />
+
+  <table id="wartungstabelle">
+    <thead>
+      <tr>
+        <th onclick="sortTable(0)">Datum</th>
+        <th onclick="sortTable(1)">Gerät</th>
+        <th onclick="sortTable(2)">Beschreibung</th>
+        <th onclick="sortTable(3)">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2025-06-01</td>
+        <td>Heizung</td>
+        <td>Filterwechsel</td>
+        <td>Erledigt</td>
+      </tr>
+      <tr>
+        <td>2025-06-15</td>
+        <td>Klima</td>
+        <td>Reinigung</td>
+        <td>Ausstehend</td>
+      </tr>
+      <tr>
+        <td>2025-07-10</td>
+        <td>Boiler</td>
+        <td>Sicherheitscheck</td>
+        <td>Erledigt</td>
+      </tr>
+      <tr>
+        <td>2025-07-20</td>
+        <td>Heizung</td>
+        <td>Thermostat prüfen</td>
+        <td>Ausstehend</td>
+      </tr>
+      <!-- Weitere Einträge hier -->
+    </tbody>
+  </table>
+
+  <script>
+    let currentSortCol = -1;
+    let currentSortDir = 1; // 1=aufsteigend, -1=absteigend
+
+    function sortTable(col) {
+      const table = document.getElementById("wartungstabelle");
+      const tbody = table.tBodies[0];
+      const rows = Array.from(tbody.rows);
+
+      if (currentSortCol === col) {
+        currentSortDir = -currentSortDir; // Sortierrichtung wechseln
+      } else {
+        currentSortDir = 1; // neu sortieren aufsteigend
+      }
+      currentSortCol = col;
+
+      rows.sort((a, b) => {
+        let aText = a.cells[col].textContent.trim();
+        let bText = b.cells[col].textContent.trim();
+
+        // Speziell für Datumsspalte (erste Spalte) Datum vergleichen
+        if (col === 0) {
+          aText = Date.parse(aText);
+          bText = Date.parse(bText);
+        } else {
+          aText = aText.toLowerCase();
+          bText = bText.toLowerCase();
+        }
+
+        if (aText < bText) return -1 * currentSortDir;
+        if (aText > bText) return 1 * currentSortDir;
+        return 0;
+      });
+
+      // sortierte Reihen wieder in tbody einfügen
+      rows.forEach(row => tbody.appendChild(row));
+
+      // Sortierpfeile setzen
+      Array.from(table.tHead.rows[0].cells).forEach((th, i) => {
+        th.classList.remove("sort-asc", "sort-desc");
+        if (i === col) {
+          th.classList.add(currentSortDir === 1 ? "sort-asc" : "sort-desc");
+        }
+      });
+    }
+
+    function filterTable() {
+      const input = document.getElementById("searchInput");
+      const filter = input.value.toLowerCase();
+      const table = document.getElementById("wartungstabelle");
+      const trs = table.tBodies[0].rows;
+
+      for (let row of trs) {
+        let text = row.textContent.toLowerCase();
+        row.style.display = text.indexOf(filter) > -1 ? "" : "none";
+      }
+    }
+  </script>
+</body>
+</html>
